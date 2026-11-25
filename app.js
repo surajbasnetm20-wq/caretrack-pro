@@ -23,7 +23,7 @@ function ics(key){let e=db.events.find(x=>x.id===key),dt=e.date.replaceAll('-','
 function move(n){let d=new Date(month+'-01T12:00');d.setMonth(d.getMonth()+n);month=date(d).slice(0,7);selected=month+'-01';render()}$('#prev').onclick=()=>move(-1);$('#next').onclick=()=>move(1);render();if('serviceWorker'in navigator)navigator.serviceWorker.register('./sw.js').catch(console.warn);
 
 function safeColor(c){return /^#[0-9a-f]{6}$/i.test(c||'')?c:'#176b54'}
-function pickDay(d){selected=d;if(bulk){if(picks.has(d))picks.delete(d);else picks.add(d)}render()}
+function pickDay(d){selected=d;if(bulk){if(picks.has(d))picks.delete(d);else picks.add(d);render();return}render();quickShift()}
 function toggleBulk(){bulk=!bulk;picks.clear();view='Month';render()}
 function templateList(manage=false){return db.templates.length?db.templates.map(t=>`<div class="template-row"><button class="template-pick" onclick="${manage?`templateEdit('${t.id}')`:`applyTemplate('${t.id}')`}"><span class="template-dot" style="background:${safeColor(t.color)}"></span><span><strong>${esc(t.label)}</strong><small>${esc(t.start)}–${esc(t.end)} · ${hours({...t,date:today()}).toFixed(2)}h · ${money(num(t.rate))}/h · ${esc(t.employer)}</small></span></button>${manage?btn('Delete',`deleteTemplate('${t.id}')`):''}</div>`).join(''):'<p class="muted">Create your first reusable shift below.</p>'}
 function sheet(title,body){let d=$('#quickdialog');if(!d.open)d.showModal();d.innerHTML=`<div class="sheet-head"><h2>${title}</h2><button onclick="document.querySelector('#quickdialog').close()">✕</button></div>${body}`}
